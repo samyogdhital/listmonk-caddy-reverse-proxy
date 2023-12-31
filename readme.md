@@ -25,7 +25,7 @@ This guide will help you nstall Listmonk with proper SSL certification on your d
    Run the following command to clone the repository into the 'listmonk' directory:
 
    ```bash
-   git clone <this-repo> .
+   git clone git@github.com:samyogdhital/listmonk-caddy-reverse-proxy.git .
    ```
 
 3. **Follow Listmonk manual installation on production**
