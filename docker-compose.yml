@@ -1,0 +1,71 @@
+version: "3.7"
+
+x-app-defaults: &app-defaults
+  restart: unless-stopped
+  image: listmonk/listmonk:latest
+  # //? Removes global 9000 port mapping to serves the whole site through caddy reverse proxy
+  # ports:
+  #   - "9000:9000"
+  networks:
+    - listmonk
+  environment:
+    - TZ=Etc/EST
+
+x-db-defaults: &db-defaults
+  image: postgres:13-alpine
+  ports:
+    - "9432:5432"
+  networks:
+    - listmonk
+  environment:
+    - POSTGRES_PASSWORD=postgresqlpassword
+    - POSTGRES_USER=listmonk
+    - POSTGRES_DB=listmonk
+  restart: unless-stopped
+  healthcheck:
+    test: [ "CMD-SHELL", "pg_isready -U listmonk" ]
+    interval: 10s
+    timeout: 5s
+    retries: 6
+
+services:
+  db:
+    <<: *db-defaults
+    container_name: listmonk_db
+    volumes:
+      - type: volume
+        source: listmonk-data
+        target: /var/lib/postgresql/data
+
+  app:
+    <<: *app-defaults
+    container_name: listmonk_app
+    depends_on:
+      - db
+    volumes:
+      - ./config.toml:/listmonk/config.toml
+      - ./uploads:/listmonk/uploads
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    container_name: caddy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/site:/srv
+      - ./caddy/caddy_data:/data
+      - ./caddy/caddy_config:/config
+    networks:
+      - listmonk
+
+networks:
+  listmonk:
+
+
+volumes:
+  listmonk-data:
+  caddy_data:
+    external: true
+  caddy_config:

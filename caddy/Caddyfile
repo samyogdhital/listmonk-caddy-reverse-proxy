@@ -1,0 +1,7 @@
+{
+    email youremailhere@email.com
+}
+
+yourdomain_or_subdomain_here.com {
+    reverse_proxy app:9000
+}
