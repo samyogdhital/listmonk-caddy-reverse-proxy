@@ -1,6 +1,6 @@
 # Listmonk Installation Guide with Caddy reverse proxy and SSL certificate
 
-This guide will help you nstall Listmonk with proper SSL certification on your domain using Docker.
+This guide will help you install Listmonk with proper SSL certification on your domain using Docker.
 
 ## Prerequisites
 
