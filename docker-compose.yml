@@ -32,6 +32,7 @@ services:
   db:
     <<: *db-defaults
     container_name: listmonk_db
+    restart: always
     volumes:
       - type: volume
         source: listmonk-data
